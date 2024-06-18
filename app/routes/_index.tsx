@@ -135,15 +135,17 @@ export async function action({ request }: ActionFunctionArgs) {
     errors.password = "Password should be at least 8 characters";
   }
 
-  if (
-    username !== adminUserName ||
-    email !== adminEmail ||
-    password !== adminPassword
-  ) {
+  if (username !== adminUserName) {
     errors.username = "Invalid username";
+  }
+  else if (
+    email !== adminEmail
+  ) {
     errors.email = "Invalid email";
+  } else if (password !== adminPassword) {
     errors.password = "Invalid password";
   }
+
 
   if (Object.keys(errors).length > 0) {
     return json({ errors });

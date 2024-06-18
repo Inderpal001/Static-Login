@@ -110,22 +110,26 @@ export async function action({ request }) {
     return json({ errors });
   }
 
-  if (email === adminEmail && password === adminPassword) {
-    session.set("userId", email);
-    session.flash("error", null);
-    return redirect("/home", {
-      headers: {
-        "Set-Cookie": await commitSession(session),
-      },
-    });
-  } else {
-    toast.error("Invalid credentials")
-    session.flash("error", "Invalid email or password");
-    return redirect("/login", {
-      headers: {
-        "Set-Cookie": await commitSession(session),
-      },
-    });
+  if (
+    email !== adminEmail
+  ) {
+    errors.email = "Invalid email";
+  } else if (password !== adminPassword) {
+    errors.password = "Invalid password";
   }
+
+  if (Object.keys(errors).length > 0) {
+    return json({ errors });
+  }
+
+  session.set("userId", email);
+
+  session.flash("error", null);
+
+  return redirect("/home", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 
 }
